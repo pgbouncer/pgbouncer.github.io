@@ -3,7 +3,7 @@ layout: toc
 title: PgBouncer compilation and installation
 ---
 
-PgBouncer compliation and installation
+PgBouncer compilation and installation
 ======================================
 
 Building
