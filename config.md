@@ -9,10 +9,10 @@ pgbouncer.ini
 Description
 -----------
 
-Config file is in "ini" format. Section names are between "[" and "]".
-Lines starting with ";" or "#" are taken as comments and ignored. The
-characters ";" and "#" are not recognized when they appear later in the
-line.
+The configuration file is in "ini" format. Section names are between
+"[" and "]". Lines starting with ";" or "#" are taken as
+comments and ignored. The characters ";" and "#" are not recognized
+when they appear later in the line.
 
 Generic settings
 ----------------
@@ -58,13 +58,13 @@ Default: /tmp
 
 ### unix_socket_mode
 
-Filesystem mode for unix socket.
+File system mode for Unix socket.
 
 Default: 0777
 
 ### unix_socket_group
 
-Group name to use for unix socket.
+Group name to use for Unix socket.
 
 Default: not set
 
@@ -84,15 +84,15 @@ The name of the file to load user names and passwords from. The file
 format is the same as the PostgreSQL 8.x pg_auth/pg_pwd file, so this
 setting can be pointed directly to one of those backend files. Since
 version 9.0, PostgreSQL does not use such text file, so it must be
-generated manually. See section [Authentication file format](#authentication-file-format) below
-about details.
+generated manually. See section [Authentication file
+format](#authentication-file-format) below about details.
 
 Default: not set.
 
 ### auth_hba_file
 
-HBA configuration file to use when [auth_type](#authtype) is `hba`. Supported
-from version 1.7 onwards.
+HBA configuration file to use when [auth_type](#auth_type) is `hba`.
+Supported from version 1.7 onwards.
 
 Default: not set
 
@@ -100,29 +100,44 @@ Default: not set
 
 How to authenticate users.
 
+pam
+
+:   PAM is used to authenticate users, [auth_file](#auth_file) is
+    ignored. This method is not compatible with databases using
+    [auth_user](#auth_user-1) option. Service name reported to PAM is
+    "pgbouncer". Also, pam is still not supported in HBA configuration
+    file.
+
 hba
-:   Actual auth type is loaded from [auth_hba_file](#authhbafile). This allows
-    different authentication methods different access paths. Example:
-    connection over unix socket use `peer` auth method, connection over
-    TCP must use TLS. Supported from version 1.7 onwards.
+
+:   Actual auth type is loaded from [auth_hba_file](#auth_hba_file).
+    This allows different authentication methods different access paths.
+    Example: connection over Unix socket use `peer` auth method,
+    connection over TCP must use TLS. Supported from version 1.7
+    onwards.
 
 cert
+
 :   Client must connect over TLS connection with valid client cert.
     Username is then taken from CommonName field from certificate.
 
 md5
-:   Use MD5-based password check. [auth_file](#authfile) may contain both
-    MD5-encrypted or plain-text passwords. This is the default
+
+:   Use MD5-based password check. [auth_file](#auth_file) may contain
+    both MD5-encrypted or plain-text passwords. This is the default
     authentication method.
 
 plain
+
 :   Clear-text password is sent over wire. Deprecated.
 
 trust
+
 :   No authentication is done. Username must still exist in
-    [auth_file](#authfile).
+    [auth_file](#auth_file).
 
 any
+
 :   Like the `trust` method, but the username given is ignored. Requires
     that all databases are configured to log in as specific user.
     Additionally, the console database allows any user to log in as
@@ -135,19 +150,39 @@ Query to load user's password from database.
 Direct access to pg_shadow requires admin rights. It's preferable to
 use non-admin user that calls SECURITY DEFINER function instead.
 
+Note that the query is run inside target database, so if a function is
+used it needs to be installed into each database.
+
 Default: `SELECT usename, passwd FROM pg_shadow WHERE usename=$1`
+
+::: {#auth_user}
+### auth_user
+:::
+
+If `auth_user` is set, any user not specified in auth_file will be
+queried through the `auth_query` query from pg_shadow in the database
+using `auth_user`. Auth_user's password will be taken from
+`auth_file`.
+
+Direct access to pg_shadow requires admin rights. It's preferable to
+use non-admin user that calls SECURITY DEFINER function instead.
+
+Default: not set.
 
 ### pool_mode
 
 Specifies when a server connection can be reused by other clients.
 
 session
+
 :   Server is released back to pool after client disconnects. Default.
 
 transaction
+
 :   Server is released back to pool after transaction finishes.
 
 statement
+
 :   Server is released back to pool after query finishes. Long
     transactions spanning multiple statements are disallowed in this
     mode.
@@ -171,8 +206,8 @@ The theoretical maximum should be never reached, unless somebody
 deliberately crafts special load for it. Still, it means you should set
 the number of file descriptors to a safely high number.
 
-Search for `ulimit` in your favourite shell man page. Note: `ulimit`
-does not apply in a Windows environment.
+Search for `ulimit` in your favorite shell man page. Note: `ulimit` does
+not apply in a Windows environment.
 
 Default: 100
 
@@ -186,7 +221,7 @@ Default: 20
 ### min_pool_size
 
 Add more server connections to pool if below this number. Improves
-behaviour when usual load comes suddenly back after period of total
+behavior when usual load comes suddenly back after period of total
 inactivity.
 
 Default: 0 (disabled)
@@ -284,7 +319,7 @@ Default: pgbouncer
 
 ### job_name
 
-Alias for [service_name](#servicename).
+Alias for [service_name](#service_name).
 
 Log settings
 ------------
@@ -335,8 +370,8 @@ Default: 60
 
 ### verbose
 
-Increase verbosity. Mirrors "-v" switch on command line. Using "-v -v"
-on command line is same as `verbose=2` in config.
+Increase verbosity. Mirrors "-v" switch on command line. Using "-v
+-v" on command line is same as verbose=2 in config.
 
 Default: 0
 
@@ -346,15 +381,15 @@ Console access control
 ### admin_users
 
 Comma-separated list of database users that are allowed to connect and
-run all commands on console. Ignored when [auth_type](#authtype) is `any`, in
-which case any username is allowed in as admin.
+run all commands on console. Ignored when [auth_type](#auth_type) is
+`any`, in which case any username is allowed in as admin.
 
 Default: empty
 
 ### stats_users
 
 Comma-separated list of database users that are allowed to connect and
-run read-only queries on console. Thats means all SHOW commands except
+run read-only queries on console. That means all SHOW commands except
 SHOW FDS.
 
 Default: empty.
@@ -371,23 +406,24 @@ should not include `ABORT` or `ROLLBACK`.
 The query is supposed to clean any changes made to database session so
 that next client gets connection in well-defined state. Default is
 `DISCARD ALL` which cleans everything, but that leaves next client no
-pre-cached state. It can be made lighter, eg `DEALLOCATE ALL` to just
+pre-cached state. It can be made lighter, e.g. `DEALLOCATE ALL` to just
 drop prepared statements, if application does not break when some state
 is kept around.
 
-When transaction pooling is used, the [server_reset_query](#serverresetquery) is not
-used, as clients must not use any session-based features as each
-transaction ends up in different connection and thus gets different
-session state.
+When transaction pooling is used, the
+[server_reset_query](#server_reset_query) is not used, as clients must
+not use any session-based features as each transaction ends up in
+different connection and thus gets different session state.
 
 Default: DISCARD ALL
 
 ### server_reset_query_always
 
-Whether [server_reset_query](#serverresetquery) should be run in all pooling modes.
-When this setting is off (default), the [server_reset_query](#serverresetquery) will
-be run only in pools that are in sessions-pooling mode. Connections in
-transaction-pooling mode should not have any need for reset query.
+Whether [server_reset_query](#server_reset_query) should be run in all
+pooling modes. When this setting is off (default), the
+[server_reset_query](#server_reset_query) will be run only in pools
+that are in sessions-pooling mode. Connections in transaction-pooling
+mode should not have any need for reset query.
 
 It is workaround for broken setups that run apps that use session
 features over transaction-pooled pgbouncer. Is changes non-deterministic
@@ -451,9 +487,9 @@ Default: 60.0
 
 ### autodb_idle_timeout
 
-If the automatically created (via "*") database pools have been unused
-this many seconds, they are freed. The negative aspect of that is that
-their statistics are also forgotten. [seconds]
+If the automatically created (via "*") database pools have been
+unused this many seconds, they are freed. The negative aspect of that is
+that their statistics are also forgotten. [seconds]
 
 Default: 3600.0
 
@@ -475,12 +511,13 @@ Default: 15.0
 
 Period to check if zone serial has changed.
 
-PgBouncer can collect dns zones from hostnames (everything after first
+PgBouncer can collect DNS zones from host names (everything after first
 dot) and then periodically check if zone serial changes. If it notices
-changes, all hostnames under that zone are looked up again. If any host
-ip changes, it's connections are invalidated.
+changes, all host names under that zone are looked up again. If any host
+IP changes, its connections are invalidated.
 
-Works only with UDNS backend (`--with-udns` to configure).
+Works only with UDNS and c-ares backends (`--with-udns` or
+`--with-cares` to configure).
 
 Default: 0.0 (disabled)
 
@@ -490,28 +527,35 @@ TLS settings
 ### client_tls_sslmode
 
 TLS mode to use for connections from clients. TLS connections are
-disabled by default. When enabled, [client_tls_key_file](#clienttlskeyfile) and
-[client_tls_cert_file](#clienttlscertfile) must be also configured to set up key and
-cert PgBouncer uses to accept client connections.
+disabled by default. When enabled,
+[client_tls_key_file](#client_tls_key_file) and
+[client_tls_cert_file](#client_tls_cert_file) must be also configured
+to set up key and cert PgBouncer uses to accept client connections.
 
 disable
+
 :   Plain TCP. If client requests TLS, it's ignored. Default.
 
 allow
+
 :   If client requests TLS, it is used. If not, plain TCP is used. If
     client uses client-certificate, it is not validated.
 
 prefer
+
 :   Same as `allow`.
 
 require
+
 :   Client must use TLS. If not, client connection is rejected. If
     client uses client-certificate, it is not validated.
 
 verify-ca
+
 :   Client must use TLS with valid client certificate.
 
 verify-full
+
 :   Same as `verify-ca`.
 
 ### client_tls_key_file
@@ -568,29 +612,35 @@ TLS mode to use for connections to PostgreSQL servers. TLS connections
 are disabled by default.
 
 disable
+
 :   Plain TCP. TCP is not event requested from server. Default.
 
 allow
+
 :   FIXME: if server rejects plain, try TLS?
 
 prefer
+
 :   TLS connection is always requested first from PostgreSQL, when
-    refused connection will be establised over plain TCP. Server
+    refused connection will be established over plain TCP. Server
     certificate is not validated.
 
 require
+
 :   Connection must go over TLS. If server rejects it, plain TCP is not
     attempted. Server certificate is not validated.
 
 verify-ca
+
 :   Connection must go over TLS and server certificate must be valid
-    according to [server_tls_ca_file](#servertlscafile). Server hostname is not
-    checked against certificate.
+    according to [server_tls_ca_file](#server_tls_ca_file). Server
+    host name is not checked against certificate.
 
 verify-full
+
 :   Connection must go over TLS and server certificate must be valid
-    according to [server_tls_ca_file](#servertlscafile). Server hostname must match
-    certificate info.
+    according to [server_tls_ca_file](#server_tls_ca_file). Server
+    host name must match certificate info.
 
 ### server_tls_ca_file
 
@@ -675,8 +725,8 @@ Default: 4096
 
 ### max_packet_size
 
-Maximum size for Postgres packets that PgBouncer allows through. One
-packet is either one query or one resultset row. Full resultset can be
+Maximum size for PostgreSQL packets that PgBouncer allows through. One
+packet is either one query or one result set row. Full result set can be
 larger.
 
 Default: 2147483647
@@ -692,9 +742,9 @@ Default: 128
 ### sbuf_loopcnt
 
 How many times to process data on one connection, before proceeding.
-Without this limit, one connection with a big resultset can stall
-PgBouncer for a long time. One loop processes one [pkt_buf](#pktbuf) amount
-of data. 0 means no limit.
+Without this limit, one connection with a big result set can stall
+PgBouncer for a long time. One loop processes one [pkt_buf](#pkt_buf)
+amount of data. 0 means no limit.
 
 Default: 5
 
@@ -738,7 +788,7 @@ Default: not set
 Default: not set
 
 Section [databases]
--------------------
+---------------------
 
 This contains key=value pairs where key will be taken as a database name
 and value as a libpq connect-string style list of key=value pairs. As
@@ -752,7 +802,8 @@ quoting: double quotes where "" is taken as single quote.
 "*" acts as fallback database: if the exact name does not exist, its
 value is taken as connect string for requested database. Such
 automatically created database entries are cleaned up if they stay idle
-longer then the time specified in [autodb_idle_timeout](#autodbidletimeout) parameter.
+longer then the time specified in
+[autodb_idle_timeout](#autodb_idle_timeout) parameter.
 
 ### dbname
 
@@ -762,9 +813,9 @@ Default: same as client-side database name.
 
 ### host
 
-Hostname or IP address to connect to. Hostnames are resolved on connect
-time, the result is cached per `dns_max_ttl` parameter. If DNS returns
-several results, they are used in round-robin manner.
+Host name or IP address to connect to. Host names are resolved on
+connect time, the result is cached per `dns_max_ttl` parameter. If DNS
+returns several results, they are used in round-robin manner.
 
 Default: not set, meaning to use a Unix socket.
 
@@ -781,14 +832,11 @@ for this database.
 Otherwise PgBouncer tries to log into the destination database with
 client username, meaning that there will be one pool per user.
 
+The length for `password` is limited to 128 characters maximum.
+
 ### auth_user
 
-If `auth_user` is set, any user not specified in auth_file will be
-queried from pg_shadow in the database using `auth_user`. Auth_user's
-password will be taken from `auth_file`.
-
-Direct access to pg_shadow requires admin rights. It's preferable to
-use non-admin user that calls SECURITY DEFINER function instead.
+Override of the global `auth_user` setting, if specified.
 
 ### pool_size
 
@@ -824,7 +872,7 @@ Ask specific `datestyle` from server.
 Ask specific **timezone** from server.
 
 Section [users]
----------------
+-----------------
 
 This contains key=value pairs where key will be taken as a user name and
 value as a libpq connect-string style list of key=value pairs. As actual
@@ -866,36 +914,34 @@ authentication info, thus allowing PgBouncer to work directly on
 PostgreSQL authentication files in data directory.
 
 Since PostgreSQL 9.0, the text files are not used anymore. Thus the auth
-file needs to be generated. See `./etc/mkauth.py` for sample script to
-generate auth file from `pg_shadow` table.
+file needs to be generated. See ./etc/mkauth.py for sample script to
+generate auth file from pg_shadow table.
 
 PostgreSQL MD5-hidden password format:
 
     "md5" + md5(password + username)
 
-So user `admin` with password `1234` will have MD5-hidden password
-`md545f2603610af569b6155c45067268c6b`.
+So user admin with password 1234 will have MD5-hidden password
+md545f2603610af569b6155c45067268c6b.
 
 HBA file format
 ---------------
 
 It follows the format of PostgreSQL pg_hba.conf file
--[http://www.postgresql.org/docs/9.4/static/auth-pg-hba-conf.html](http://www.postgresql.org/docs/9.4/static/auth-pg-hba-conf.html)
+-<http://www.postgresql.org/docs/9.4/static/auth-pg-hba-conf.html>
 
 There are following differences:
 
--   Supported record types: `local`, `host`, `hostssl`,
-    `hostnossl`.
--   Database field: Supports `all`, `sameuser`, `@file`, multiple
-    names. Not supported: `replication`, `samerole`, `samegroup`.
--   Username field: Supports `all`, `@file`, multiple names. Not
-    supported: `+groupname`.
+-   Supported record types: local, host, hostssl, hostnossl.
+-   Database field: Supports all, sameuser, @file, multiple names. Not
+    supported: replication, samerole, samegroup.
+-   Username field: Supports all, @file, multiple names. Not supported:
+    +groupname.
 -   Address field: Supported IPv4, IPv6. Not supported: DNS names,
     domain prefixes.
--   Auth-method field: Supported methods: `trust`, `reject`,
-    `md5`, `password`, `peer`, `cert`. Not supported: `gss`,
-    `sspi`, `ident`, `ldap`, `radius`, `pam`. Also username
-    map (`map=`) parameter is not supported.
+-   Auth-method field: Supported methods: trust, reject, md5, password,
+    peer, cert. Not supported: gss, sspi, ident, ldap, radius, pam. Also
+    username map (map=) parameter is not supported.
 
 Example
 -------
@@ -920,7 +966,7 @@ Database defaults:
 
     [databases]
 
-    ; foodb over unix socket
+    ; foodb over Unix socket
     foodb =
 
     ; redirect bardb to bazdb on localhost
@@ -945,8 +991,8 @@ Example of secure function for auth_query:
 See also
 --------
 
-[https://pgbouncer.github.io](https://pgbouncer.github.io)/
+pgbouncer(1) - man page for general usage, console commands.
 
-[https://wiki.postgresql.org/wiki/PgBouncer](https://wiki.postgresql.org/wiki/PgBouncer)
+<https://pgbouncer.github.io/>
 
-pgbouncer(1) - manpage for general usage, console commands.
+<https://wiki.postgresql.org/wiki/PgBouncer>

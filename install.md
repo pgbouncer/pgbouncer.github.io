@@ -36,29 +36,36 @@ instead just once at config load time. This requires proper async DNS
 implementation. Following list shows supported backends and their
 probing order:
 
-|----------------------------|----------|-----------|------------|----------------|---------------------------------------|
-| backend | parallel | EDNS0 (1) | /etc/hosts | SOA lookup (2) | note |
-|============================|==========|===========|============|================|=======================================|
+-------------------------------------------------------------|
+| backend | parallel | EDNS0 (1) | /etc/hosts | SOA lookup (2) |
+note | =============================================================|
 | c-ares | yes | yes | yes | yes | ipv6+CNAME buggy in <=1.10 |
-|----------------------------|----------|-----------|------------|----------------|---------------------------------------|
+-------------------------------------------------------------|
 | udns | yes | yes | no | yes | ipv4-only |
-|----------------------------|----------|-----------|------------|----------------|---------------------------------------|
+-------------------------------------------------------------|
 | evdns, libevent 2.x | yes | no | yes | no | does not check /etc/hosts updates |
-|----------------------------|----------|-----------|------------|----------------|---------------------------------------|
+-------------------------------------------------------------|
 | getaddrinfo_a, glibc 2.9+ | yes | yes (3) | yes | no | N/A on non-linux |
-|----------------------------|----------|-----------|------------|----------------|---------------------------------------|
+-------------------------------------------------------------|
 | getaddrinfo, libc | no | yes (3) | yes | no | N/A on win32, requires pthreads |
-|----------------------------|----------|-----------|------------|----------------|---------------------------------------|
+-------------------------------------------------------------|
 | evdns, libevent 1.x | yes | no | no | no | buggy |
-|----------------------------|----------|-----------|------------|----------------|---------------------------------------|
+-------------------------------------------------------------|
 
 1.  EDNS0 is required to have more than 8 addresses behind one hostname.
 2.  SOA lookup is needed to re-check hostnames on zone serial change
-3.  To enable EDNS0, add `options edns0` to /etc/resolv.conf
+3.  To enable EDNS0, add options edns0 to /etc/resolv.conf
 
-`./configure` also has flags `--enable-evdns` and
-`--disable-evdns` which turn off automatic probing and force use of
-either `evdns` or `getaddrinfo_a()`.
+./configure also has flags --enable-evdns and --disable-evdns which
+turn off automatic probing and force use of either evdns or
+getaddrinfo_a().
+
+PAM authorization
+-----------------
+
+To enable PAM authorization ./configure has a flag --with-pam (default
+value is no). When compiled with PAM support new global authorization
+type pam appears which can be used to validate users through PAM.
 
 Building from GIT
 -----------------
@@ -75,7 +82,7 @@ and generate the header and config files before you can run configure:
     $ make
     $ make install
 
-Additional packages required: autoconf, automake, libtool,
+Additional packages required: autoconf, automake, libevent-dev, libtool,
 autoconf-archive, python-docutils, and pkg-config.
 
 Building for WIN32
@@ -101,7 +108,7 @@ Running from command-line goes as usual, except -d (daemonize), -R
 (reboot) and -u (switch user) switches will not work.
 
 To run pgbouncer as a Windows service, you need to configure
-`service_name` parameter to set name for service. Then:
+service_name parameter to set name for service. Then:
 
     $ pgbouncer -regservice config.ini
 
