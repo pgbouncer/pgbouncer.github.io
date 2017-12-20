@@ -18,7 +18,7 @@ PgBouncer 1.8.x
     -   Add wait and wait_us fields to SHOW commands output.
     -   Add new commands SHOW STATS_TOTALS and SHOW STATS_AVERAGES.
     -   Track queries and transactions separately in SHOW STATS. The
-        fields total_query_time, avg_query, avg_query, and
+        fields total_requests, total_query_time, avg_req, and
         avg_query have been replaced by new fields.
     -   Add wait_time to SHOW STATS.
 -   Fixes
