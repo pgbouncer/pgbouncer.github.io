@@ -79,14 +79,18 @@ parameter to connect string.
 ### Disabling prepared statements in PHP/PDO
 
 To disable use of server-side prepared statements, the PDO attribute
-`PDO::ATTR_EMULATE_PREPARES` must be set to `true`. Either at
+`PDO::PGSQL_ATTR_DISABLE_PREPARES` must be set to `true`. Either at
 connect-time:
 
-    $db = new PDO("dsn", "user", "pass", array(PDO::ATTR_EMULATE_PREPARES => true));
+    $db = new PDO("dsn", "user", "pass", array(PDO::PGSQL_ATTR_DISABLE_PREPARES => true));
 
 or later:
 
-    $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
+    $db->setAttribute(PDO::PGSQL_ATTR_DISABLE_PREPARES, true);
+
+Prior to PHP 5.6, you have to replace `PDO::PGSQL_ATTR_DISABLE_PREPARES` by `PDO::ATTR_EMULATE_PREPARES`.
+
+If you are using Doctrine/DBAL its already done for you.
 
 ## How to upgrade PgBouncer without dropping connections?
 
