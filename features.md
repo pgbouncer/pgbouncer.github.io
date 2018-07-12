@@ -45,7 +45,7 @@ title: PgBouncer features
 ## SQL feature map for pooling modes
 
 Following table list various PostgreSQL features and whether they are
-ompatible with PgBouncer pooling modes.  Note that 'transaction'
+compatible with PgBouncer pooling modes.  Note that 'transaction'
 pooling breaks client expectations of server and can be used only
 if application cooperates by not using non-working features.
 
