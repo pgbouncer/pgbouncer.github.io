@@ -14,6 +14,7 @@ PgBouncer depends on few things to get compiled:
 
 -   [GNU Make](https://www.gnu.org/software/make/) 3.81+
 -   [libevent](http://libevent.org/) 2.0
+-   [pkg-config](https://www.freedesktop.org/wiki/Software/pkg-config/)
 -   (optional) [OpenSSL](https://www.openssl.org/) 1.0.1 for TLS
     support.
 -   (optional) [c-ares](http://c-ares.haxx.se/) as alternative to
@@ -25,7 +26,7 @@ When dependencies are installed just run:
     $ make
     $ make install
 
-If you are building from git, or are building for Windows, please see
+If you are building from Git, or are building for Windows, please see
 separate build instructions below.
 
 DNS lookup support
@@ -69,10 +70,10 @@ To enable PAM authorization ./configure has a flag
 support new global authorization type pam appears which
 can be used to validate users through PAM.
 
-Building from GIT
+Building from Git
 -----------------
 
-Building PgBouncer from GIT requires that you fetch libusual submodule
+Building PgBouncer from Git requires that you fetch libusual submodule
 and generate the header and config files before you can run configure:
 
     $ git clone https://github.com/pgbouncer/pgbouncer.git
@@ -84,8 +85,8 @@ and generate the header and config files before you can run configure:
     $ make
     $ make install
 
-Additional packages required: autoconf, automake, libevent-dev, libtool,
-autoconf-archive, python-docutils, and pkg-config.
+Additional packages required: autoconf, automake, libtool,
+python-docutils
 
 Building for WIN32
 ------------------
