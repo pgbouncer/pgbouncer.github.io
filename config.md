@@ -105,8 +105,8 @@ pam
 :   PAM is used to authenticate users, [auth_file](#auth_file) is
     ignored. This method is not compatible with databases using
     [auth_user](#auth_user-1) option. Service name reported to PAM is
-    "pgbouncer". Also, pam is still not supported in HBA configuration
-    file.
+    "pgbouncer". Also, pam is still not supported in HBA
+    configuration file.
 
 hba
 
@@ -155,9 +155,7 @@ used it needs to be installed into each database.
 
 Default: `SELECT usename, passwd FROM pg_shadow WHERE usename=$1`
 
-::: {#auth_user}
 ### auth_user
-:::
 
 If `auth_user` is set, any user not specified in auth_file will be
 queried through the `auth_query` query from pg_shadow in the database
@@ -914,15 +912,15 @@ authentication info, thus allowing PgBouncer to work directly on
 PostgreSQL authentication files in data directory.
 
 Since PostgreSQL 9.0, the text files are not used anymore. Thus the auth
-file needs to be generated. See ./etc/mkauth.py for sample script to
-generate auth file from pg_shadow table.
+file needs to be generated. See ./etc/mkauth.py for sample
+script to generate auth file from pg_shadow table.
 
 PostgreSQL MD5-hidden password format:
 
     "md5" + md5(password + username)
 
-So user admin with password 1234 will have MD5-hidden password
-md545f2603610af569b6155c45067268c6b.
+So user admin with password 1234 will have
+MD5-hidden password md545f2603610af569b6155c45067268c6b.
 
 HBA file format
 ---------------
@@ -932,15 +930,21 @@ It follows the format of PostgreSQL pg_hba.conf file
 
 There are following differences:
 
--   Supported record types: local, host, hostssl, hostnossl.
--   Database field: Supports all, sameuser, @file, multiple names. Not
-    supported: replication, samerole, samegroup.
--   Username field: Supports all, @file, multiple names. Not supported:
-    +groupname.
+-   Supported record types: local, host,
+    hostssl, hostnossl.
+-   Database field: Supports all, sameuser,
+    @file, multiple names. Not supported:
+    replication, samerole,
+    samegroup.
+-   Username field: Supports all, @file,
+    multiple names. Not supported: +groupname.
 -   Address field: Supported IPv4, IPv6. Not supported: DNS names,
     domain prefixes.
--   Auth-method field: Supported methods: trust, reject, md5, password,
-    peer, cert. Not supported: gss, sspi, ident, ldap, radius, pam. Also
+-   Auth-method field: Supported methods: trust,
+    reject, md5, password,
+    peer, cert. Not supported:
+    gss, sspi, ident,
+    ldap, radius, pam. Also
     username map (map=) parameter is not supported.
 
 Example

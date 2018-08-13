@@ -23,5 +23,6 @@ for ln in sys.stdin:
     ln = re.sub(r'`([^`]+)`_', fixlink, ln) # fix local links
     if ln[0] == '|' and ln[-2] != '|':
         ln = ln.rstrip() + ' '
+    ln = re.sub(r'\[([^]]*)\]{\.title-ref}', r'\1', ln)
     sys.stdout.write(ln)
 

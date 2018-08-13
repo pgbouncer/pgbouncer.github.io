@@ -127,8 +127,8 @@ Command line switches
 :   Do an online restart. That means connecting to the running process,
     loading the open sockets from it, and then using them. If there is
     no active process, boot normally. Note: Works only if OS supports
-    Unix sockets and the unix_socket_dir is not disabled in config.
-    Does not work on Windows machines. Does not work with TLS
+    Unix sockets and the unix_socket_dir is not disabled
+    in config. Does not work on Windows machines. Does not work with TLS
     connections, they are dropped.
 
 -u user
@@ -173,7 +173,8 @@ The console is available by connecting as normal to the database
 
 Only users listed in configuration parameters **admin_users** or
 **stats_users** are allowed to login to the console. (Except when
-auth_type=any, then any user is allowed in as a stats_user.)
+auth_type=any, then any user is allowed in as a
+stats_user.)
 
 Additionally, the username **pgbouncer** is allowed to log in without
 password, if the login comes via Unix socket and the client has same
@@ -409,13 +410,15 @@ sv_idle
 sv_used
 
 :   Server connections that have been idle more than
-    server_check_delay, so they needs server_check_query to run on
-    it before it can be used.
+    server_check_delay, so they needs
+    server_check_query to run on it before it can be
+    used.
 
 sv_tested
 
 :   Server connections that are currently running either
-    server_reset_query or server_check_query.
+    server_reset_query or
+    server_check_query.
 
 sv_login
 
