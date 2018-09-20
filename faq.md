@@ -166,3 +166,12 @@ servers. Only negative aspect of that is that each PgBouncer hop adds
 small amount of latency to each query. So it’s probably best to simply
 test whether the payoff is worth the cost.
 
+## `SET search_path` may not work as expected
+
+PgBouncer does not emulate the behaviour of session changing features such as `SET search_path` ([#73](https://github.com/pgbouncer/pgbouncer/pull/73#issuecomment-143957485)),
+which means that adjusting this value has a knock-on effect for all clients connected to that database.
+
+Due to [CVE-2018-1058](https://wiki.postgresql.org/wiki/A_Guide_to_CVE-2018-1058:_Protect_Your_Search_Path),
+certain versions of `pg_dump` will set an empty `search_path` at runtime, which then breaks any other connections to the database until PgBouncer is restarted ([gitlab-ce #49089](https://gitlab.com/gitlab-org/gitlab-ce/issues/49089)).
+
+If you're using `pg_dump` to backup your databases and are using an affected version mentioned above, you should avoid using `pg_dump` through PgBouncer.
