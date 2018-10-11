@@ -19,13 +19,11 @@ title: Community
 
 ## Support
 
-- [Project page](https://github.com/pgbouncer/pgbouncer) at Github.
+- [Project page](https://github.com/pgbouncer/pgbouncer) at GitHub
 
-- [Issue tracker](https://github.com/pgbouncer/pgbouncer/issues) at Github.
+- [Issue tracker](https://github.com/pgbouncer/pgbouncer/issues) at GitHub
 
-- [Mailing-list](http://lists.pgfoundry.org/mailman/listinfo/pgbouncer-general) at PgFoundry.
+- [PgBouncer section](https://stackoverflow.com/questions/tagged/pgbouncer) at Stack Overflow
 
-- [PgBouncer section](https://stackoverflow.com/questions/tagged/pgbouncer) at StackOverflow.
-
-- [Chat room](https://gitter.im/pgbouncer/pgbouncer) at Gitter.
+- [Chat room](https://gitter.im/pgbouncer/pgbouncer) at Gitter
 
