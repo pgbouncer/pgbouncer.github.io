@@ -226,6 +226,16 @@
     ], 
     [
       {
+        "basever": "1.10", 
+        "date": "2019-07-01", 
+        "tgz_basename": "pgbouncer-1.10.0.tar.gz", 
+        "tgz_file": "files/1.10.0/pgbouncer-1.10.0.tar.gz", 
+        "tgz_size": 480571, 
+        "version": "1.10.0"
+      }
+    ], 
+    [
+      {
         "basever": "1.1", 
         "date": "2007-12-10", 
         "tgz_basename": "pgbouncer-1.1.2.tgz", 
