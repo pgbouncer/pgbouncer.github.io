@@ -109,8 +109,17 @@ cert
     Username is then taken from CommonName field from certificate.
 
 md5
-:   Use MD5-based password check. `auth_file` may contain both MD5-encrypted
-    or plain-text passwords.  This is the default authentication method.
+:   Use MD5-based password check.  This is the default authentication
+    method.  `auth_file` may contain both MD5-encrypted or plain-text
+    passwords.  If `md5` is configured and a user has a SCRAM secret,
+    then SCRAM authentication is used automatically instead.
+
+scram-sha-256
+:   Use password check with SCRAM-SHA-256.  `auth_file` has to contain
+    SCRAM secrets or plain-text passwords.  Note that SCRAM secrets
+    can only be used for verifying the password of a client but not
+    for logging into a server.  To be able to use SCRAM on server
+    connections, use plain-text passwords.
 
 plain
 :   Clear-text password is sent over wire.  Deprecated.
@@ -286,6 +295,14 @@ Default: pgbouncer
 
 Alias for `service_name`.
 
+### stats_period
+
+Sets how often the averages shown in various `SHOW` commands are
+updated and how often aggregated statistics are written to the log
+(but see `log_stats`). [seconds]
+
+Default: 60
+
 
 ## Log settings
 
@@ -327,11 +344,13 @@ Log error messages pooler sends to clients.
 
 Default: 1
 
-### stats_period
+### log_stats
 
-Period for writing aggregated stats into log.
+Write aggregated statistics into the log, every `stats_period`.  This
+can be disabled if external monitoring tools are used to grab the same
+data from `SHOW` commands.
 
-Default: 60
+Default: 1
 
 ### verbose
 
@@ -790,7 +809,7 @@ Default: not set, meaning to use a Unix socket.
 
 Default: 5432
 
-### user, password
+### user
 
 If `user=` is set, all connections to the destination database will be
 done with the specified user, meaning that there will be only one pool
@@ -799,7 +818,12 @@ for this database.
 Otherwise PgBouncer tries to log into the destination database with client
 username, meaning that there will be one pool per user.
 
-The length for `password` is limited to 128 characters maximum.
+### password
+
+The length for `password` is limited to 160 characters maximum.
+
+If no password is specified here, the password from the `auth_file` or
+`auth_query` will be used.
 
 ### auth_user
 
@@ -846,14 +870,20 @@ Ask specific **timezone** from server.
 
 ## Section [users]
 
-This contains key=value pairs where key will be taken as a user name and
-value as a libpq connect-string style list of key=value pairs. As actual libpq is not
-used, so not all features from libpq can be used.
+This contains key=value pairs where the key will be taken as a user name and
+the value as a libpq connect-string style list of key=value pairs of
+configuration settings specific for this user.  Only a few settings
+are available here.
 
 ### pool_mode
 
 Set the pool mode to be used for all connections from this user. If not set, the
 database or default pool_mode is used.
+
+### max_user_connections
+
+Configure a maximum for the user (i.e. all pools with the user will
+not have more than this many server connections).
 
 
 ## Include directive
@@ -876,10 +906,11 @@ file in following format:
 
     "username1" "password" ...
     "username2" "md5abcdef012342345" ...
+    "username2" "SCRAM-SHA-256$<iterations>:<salt>$<storedkey>:<serverkey>"
 
 There should be at least 2 fields, surrounded by double quotes. The first
-field is the username and the second is either a plain-text or a MD5-hidden
-password.  PgBouncer ignores the rest of the line.
+field is the username and the second is either a plain-text, a MD5-hidden
+password, or a SCRAM secret.  PgBouncer ignores the rest of the line.
 
 PostgreSQL MD5-hidden password format:
 
@@ -887,6 +918,12 @@ PostgreSQL MD5-hidden password format:
 
 So user `admin` with password `1234` will have MD5-hidden password
 `md545f2603610af569b6155c45067268c6b`.
+
+PostgreSQL SCRAM secret format:
+
+    SCRAM-SHA-256$<iterations>:<salt>$<storedkey>:<serverkey>
+
+See the PostgreSQL documentation and RFC 5803 for details on this.
 
 The authentication file can be written by hand, but it's also useful
 to generate it from some other list of users and passwords.  See
@@ -896,18 +933,16 @@ file from the `pg_shadow` system table.
 
 ## HBA file format
 
-It follows the format of PostgreSQL pg_hba.conf file -
-<http://www.postgresql.org/docs/9.4/static/auth-pg-hba-conf.html>
-
-There are following differences:
+It follows the format of the PostgreSQL `pg_hba.conf` file
+(see <https://www.postgresql.org/docs/current/auth-pg-hba-conf.html>).
 
 * Supported record types: `local`, `host`, `hostssl`, `hostnossl`.
 * Database field: Supports `all`, `sameuser`, `@file`, multiple names.  Not supported: `replication`, `samerole`, `samegroup`.
 * Username field: Supports `all`, `@file`, multiple names.  Not supported: `+groupname`.
 * Address field: Supported IPv4, IPv6.  Not supported: DNS names, domain prefixes.
-* Auth-method field:  Supported methods: `trust`, `reject`, `md5`, `password`, `peer`, `cert`.
-  Not supported: `gss`, `sspi`, `ident`, `ldap`, `radius`, `pam`.
-  Also username map (`map=`) parameter is not supported.
+* Auth-method field: Only methods supported by PgBouncer's `auth_type`
+  are supported, except `any` and `pam`, which only work globally.
+  Username map (`map=`) parameter is not supported.
 
 
 ## Example
@@ -941,7 +976,7 @@ Database defaults:
     ; access to destination database will go with single user
     forcedb = host=127.0.0.1 port=300 user=baz password=foo client_encoding=UNICODE datestyle=ISO
 
-Example of secure function for auth_query:
+Example of a secure function for `auth_query`:
 
     CREATE OR REPLACE FUNCTION pgbouncer.user_lookup(in i_username text, out uname text, out phash text)
     RETURNS record AS $$
