@@ -9,7 +9,7 @@ import sys
 from distutils.version import StrictVersion
 
 date_map = {}
-for m in re.finditer(r'^[*][*]([-0-9]+) *- *\w+ *([0-9.]+) *-', open('changelog.md','r').read(), re.M):
+for m in re.finditer(r'^[*][*]([-0-9]+) *- *\w+ *([0-9.]+) *-', open('changelog.md', 'r').read(), re.M):
     date_map[m.group(2)] = m.group(1)
 
 vermap = {}
@@ -35,7 +35,7 @@ for ver in vlist:
         data['series'].append([])
 
     parts = fn.split('/')
-    url = fn.split('/',1)[1] # cut 'downloads'
+    url = fn.split('/', 1)[1]  # cut 'downloads'
     data['series'][-1].append({
         'basever': basever,
         'version': ver,
