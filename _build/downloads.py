@@ -21,12 +21,9 @@ for fn in glob.glob('downloads/files/*/*'):
     ver = parts[-2]
     vermap[ver] = fn
 
-vlist = vermap.keys()
-vlist.sort(reverse=True, key=StrictVersion)
-
 data = {"series": []}
 lastserie = ''
-for ver in vlist:
+for ver in sorted(vermap.keys(), key=StrictVersion, reverse=True):
     fn = vermap[ver]
     basever = '%s.%s' % tuple(ver.split('.')[:2])
     basename = parts[-1]
@@ -45,4 +42,4 @@ for ver in vlist:
         'tgz_size': os.stat(fn).st_size
     })
 
-print json.dumps(data, indent=2, sort_keys=True)
+print(json.dumps(data, indent=2, sort_keys=True))
