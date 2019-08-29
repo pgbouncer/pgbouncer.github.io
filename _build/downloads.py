@@ -6,6 +6,8 @@ import re
 import glob
 import sys
 
+from distutils.version import StrictVersion
+
 date_map = {}
 for m in re.finditer(r'^[*][*]([-0-9]+) *- *\w+ *([0-9.]+) *-', open('changelog.md','r').read(), re.M):
     date_map[m.group(2)] = m.group(1)
@@ -20,7 +22,7 @@ for fn in glob.glob('downloads/files/*/*'):
     vermap[ver] = fn
 
 vlist = vermap.keys()
-vlist.sort(reverse=True)
+vlist.sort(reverse=True, key=StrictVersion)
 
 data = {"series": []}
 lastserie = ''

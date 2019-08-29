@@ -2,6 +2,26 @@
   "series": [
     [
       {
+        "basever": "1.11", 
+        "date": "2019-08-27", 
+        "tgz_basename": "pgbouncer-1.11.0.tar.gz", 
+        "tgz_file": "files/1.11.0/pgbouncer-1.11.0.tar.gz", 
+        "tgz_size": 571414, 
+        "version": "1.11.0"
+      }
+    ], 
+    [
+      {
+        "basever": "1.10", 
+        "date": "2019-07-01", 
+        "tgz_basename": "pgbouncer-1.10.0.tar.gz", 
+        "tgz_file": "files/1.10.0/pgbouncer-1.10.0.tar.gz", 
+        "tgz_size": 480571, 
+        "version": "1.10.0"
+      }
+    ], 
+    [
+      {
         "basever": "1.9", 
         "date": "2018-08-13", 
         "tgz_basename": "pgbouncer-1.9.0.tar.gz", 
@@ -222,26 +242,6 @@
         "tgz_file": "files/1.2/pgbouncer-1.2.tgz", 
         "tgz_size": 143915, 
         "version": "1.2"
-      }
-    ], 
-    [
-      {
-        "basever": "1.11", 
-        "date": "2019-08-27", 
-        "tgz_basename": "pgbouncer-1.11.0.tar.gz", 
-        "tgz_file": "files/1.11.0/pgbouncer-1.11.0.tar.gz", 
-        "tgz_size": 571414, 
-        "version": "1.11.0"
-      }
-    ], 
-    [
-      {
-        "basever": "1.10", 
-        "date": "2019-07-01", 
-        "tgz_basename": "pgbouncer-1.10.0.tar.gz", 
-        "tgz_file": "files/1.10.0/pgbouncer-1.10.0.tar.gz", 
-        "tgz_size": 480571, 
-        "version": "1.10.0"
       }
     ], 
     [
