@@ -1,6 +1,6 @@
 # Jekyll configuration
 
-name: PgBouncer
+title: PgBouncer
 description: Lightweight connection pooler for PostgreSQL
 
 # url is currently only used only for the RSS feed in feed.xml
