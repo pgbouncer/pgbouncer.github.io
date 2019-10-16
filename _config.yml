@@ -4,7 +4,7 @@ title: PgBouncer
 description: Lightweight connection pooler for PostgreSQL
 
 # url is currently only used only for the RSS feed in feed.xml
-url: https://pgbouncer.github.io
+url: https://www.pgbouncer.org/
 
 # baseurl will often be '', but for a project page on gh-pages, it needs to
 # be the project name.
