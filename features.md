@@ -66,7 +66,7 @@ features.
 |----------------------------------+-----------------+---------------------|
 
 [^0]:
-    Startup parameters are: `client_encoding`, `datestyle`, `timezon`,
+    Startup parameters are: `client_encoding`, `datestyle`, `timezone`,
     and `standard_conforming_strings`.  PgBouncer detects their
     changes and so it can guarantee they remain consistent for the
     client.
