@@ -16,14 +16,14 @@ PgBouncer does not have internal multi-host configuration.
 It is possible via some external tools:
 
 1.  DNS round-robin. Use several IPs behind one DNS name. PgBouncer does
-    not look up DNS each time new connection is launched. Instead it
-    caches all IPs and does round-robin internally. Note: if there is
+    not look up DNS each time new connection is launched. Instead, it
+    caches all IPs and does round-robin internally. Note: if there are 
     more than 8 IPs behind one name, the DNS backend must support EDNS0
     protocol. See README for details.
 
 2.  Use a TCP connection load-balancer. Either
     [LVS](http://www.linuxvirtualserver.org/) or
-    [HAProxy](http://www.haproxy.org/) seem to be good choices. On
+    [HAProxy](http://www.haproxy.org/) seem to be good choices. On the 
     PgBouncer side it may be good idea to make `server_lifetime` smaller
     and also turn `server_round_robin` on - by default idle connections
     are reused by LIFO algorithm which may work not so well when
@@ -34,15 +34,15 @@ It is possible via some external tools:
 PgBouncer does not have internal failover-host configuration nor detection.
 It is possible via some external tools:
 
-1. DNS reconfiguration - when ip behind DNS name is reconfigured, pgbouncer
-   will reconnect to new server.  This behaviour can be tuned via 2
+1. DNS reconfiguration - if the ip behind DNS name is reconfigured, PgBouncer
+   can reconnect to the new server.  This behaviour can be tuned via 2
    config parameters - **dns_max_ttl** tunes lifetime for one hostname,
    and **dns_zone_check_period** tunes how often zone SOA will be
-   queried for changes.  If zone SOA record has changed, pgbouncer
+   queried for changes.  If zone SOA record has changed, PgBouncer
    will re-query all hostnames under that zone.
 
 2. Write new host to config and let PgBouncer reload it - send SIGHUP
-   or use RELOAD; command on console.  PgBouncer will detect changed
+   or use `RELOAD;` command on console.  PgBouncer will detect changed
    host config and reconnect to new server.
 
 ## How to use SSL connections with PgBouncer?
@@ -154,15 +154,18 @@ link
 
 ## Should PgBouncer be installed on webserver or database server?
 
-It depends. Installing on webserver is good when short-connections are
-used, then the connection setup latency is minimised - TCP requires
-couple of packet roundtrips before connection is usable. Installing on
-database server is good when there are many different hosts (eg.
-webservers) connecting to it, then their connections can be optimised
-together.
+It depends. 
+
+Installing PgBouncer on the webserver is good when short-lived connections are
+used; then the connection setup latency is minimised - TCP requires
+couple of packet roundtrips before connection is usable. Installing PgBouncer on 
+the database server is good when there are many different hosts (eg. webservers) 
+connecting to it; then their connections can be optimized together.
 
 It is also possible to install PgBouncer on both webserver and database
-servers. Only negative aspect of that is that each PgBouncer hop adds
-small amount of latency to each query. So it’s probably best to simply
-test whether the payoff is worth the cost.
+servers. One negative aspect of that is that each PgBouncer hop adds a 
+small amount of latency to each query. 
 
+In the end, you will need to test which model works best for your performance needs.
+You should also consider how installing PgBouncer will affect the failover of your
+applications in the event of a webserver vs database server going away.  
