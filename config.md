@@ -220,23 +220,40 @@ Default: 5.0
 
 ### max_db_connections
 
-Do not allow more than this many connections per database (regardless of pool, i.e.
-user). It should be noted that when you hit the limit, closing a client connection
-to one pool will not immediately allow a server connection to be established for
-another pool, because the server connection for the first pool is still open.
-Once the server connection closes (due to idle timeout), a new server connection
-will immediately be opened for the waiting pool.
+Do not allow more than this many server connections per database
+(regardless of user).  This considers the PgBouncer database that the
+client has connected to, not the PostgreSQL database of the outgoing
+connection.
 
-Default: unlimited
+This can also be set per database in the `[databases]` section.
+
+Note that when you hit the limit, closing a client connection to one
+pool will not immediately allow a server connection to be established
+for another pool, because the server connection for the first pool is
+still open.  Once the server connection closes (due to idle timeout),
+a new server connection will immediately be opened for the waiting
+pool.
+
+Default: 0 (unlimited)
 
 ### max_user_connections
 
-Do not allow more than this many connections per-user (regardless of pool, i.e.
-user). It should be noted that when you hit the limit, closing a client connection
-to one pool will not immediately allow a server connection to be established for
-another pool, because the server connection for the first pool is still open.
-Once the server connection closes (due to idle timeout), a new server connection
-will immediately be opened for the waiting pool.
+Do not allow more than this many server connections per user
+(regardless of database).  This considers the PgBouncer user that is
+associated with a pool, which is either the user specified for the
+server connection or in absence of that the user the client has
+connected as.
+
+This can also be set per user in the `[users]` section.
+
+Note that when you hit the limit, closing a client connection to one
+pool will not immediately allow a server connection to be established
+for another pool, because the server connection for the first pool is
+still open.  Once the server connection closes (due to idle timeout),
+a new server connection will immediately be opened for the waiting
+pool.
+
+Default: 0 (unlimited)
 
 ### server_round_robin
 
@@ -589,7 +606,7 @@ Default: not set
 Which TLS protocol versions are allowed.  Allowed values: `tlsv1.0`, `tlsv1.1`, `tlsv1.2`, `tlsv1.3`.
 Shortcuts: `all` (tlsv1.0,tlsv1.1,tlsv1.2,tlsv1.3), `secure` (tlsv1.2,tlsv1.3), `legacy` (all).
 
-Default: `all`
+Default: `secure`
 
 ### client_tls_ciphers
 
@@ -664,7 +681,7 @@ Default: not set
 Which TLS protocol versions are allowed.  Allowed values: `tlsv1.0`, `tlsv1.1`, `tlsv1.2`, `tlsv1.3`.
 Shortcuts: `all` (tlsv1.0,tlsv1.1,tlsv1.2,tlsv1.3), `secure` (tlsv1.2,tlsv1.3), `legacy` (all).
 
-Default: `all`
+Default: `secure`
 
 ### server_tls_ciphers
 
@@ -809,6 +826,17 @@ Default: not set
 ### tcp_keepintvl
 
 Default: not set
+
+### tcp_user_timeout
+
+Sets the `TCP_USER_TIMEOUT` socket option.  This specifies the maximum
+amount of time in milliseconds that transmitted data may remain
+unacknowledged before the TCP connection is forcibly closed.  If set
+to 0, then operating system's default is used.
+
+This is currently only supported on Linux.
+
+Default: 0
 
 
 ## Section [databases]
@@ -966,10 +994,22 @@ PostgreSQL SCRAM secret format:
 
 See the PostgreSQL documentation and RFC 5803 for details on this.
 
+The passwords or secrets stored in the authentication file serve two
+purposes.  First, they are used to verify the passwords of incoming
+client connections, if a password-based authentication method is
+configured.  Second, they are used as the passwords for outgoing
+connections to the backend server, if the backend server requires
+password-based authentication (unless the password is specified
+directly in the database's connection string).  The latter works if
+the password is stored in plain text or MD5-hashed.  SCRAM secrets
+cannot be used for logging into a server.
+
 The authentication file can be written by hand, but it's also useful
 to generate it from some other list of users and passwords.  See
 `./etc/mkauth.py` for a sample script to generate the authentication
-file from the `pg_shadow` system table.
+file from the `pg_shadow` system table.  Alternatively, use
+`auth_query` instead of `auth_file` to avoid having to maintain a
+separate authentication file.
 
 
 ## HBA file format
@@ -980,7 +1020,7 @@ It follows the format of the PostgreSQL `pg_hba.conf` file
 * Supported record types: `local`, `host`, `hostssl`, `hostnossl`.
 * Database field: Supports `all`, `sameuser`, `@file`, multiple names.  Not supported: `replication`, `samerole`, `samegroup`.
 * User name field: Supports `all`, `@file`, multiple names.  Not supported: `+groupname`.
-* Address field: Supported IPv4, IPv6.  Not supported: DNS names, domain prefixes.
+* Address field: Supports IPv4, IPv6.  Not supported: DNS names, domain prefixes.
 * Auth-method field: Only methods supported by PgBouncer's `auth_type`
   are supported, except `any` and `pam`, which only work globally.
   User name map (`map=`) parameter is not supported.
