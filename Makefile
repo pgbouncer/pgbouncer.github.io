@@ -5,7 +5,8 @@ clean:
 	rm -rf _site
 
 init:
-	bundle install --path .gems
+	bundle config set path '.gems'
+	bundle install
 
 update:
 	bundle update
