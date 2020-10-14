@@ -45,19 +45,6 @@ It is possible via some external tools:
    or use RELOAD; command on console.  PgBouncer will detect changed
    host config and reconnect to new server.
 
-## How to use SSL connections with PgBouncer?
-
-Since version 1.7, PgBouncer has built-in support for TLS.  Just configure it.
-
-[ Old answer for older PgBouncer versions. ]
-
-Use [Stunnel](https://www.stunnel.org/). Since version 4.27 it supports
-PostgreSQL protocol for both client and server side. It is activated by
-setting `protocol=pgsql`.
-
-Alternative is to use Stunnel on both sides of connection, then the
-protocol support is not needed.
-
 ## How to use prepared statements with session pooling?
 
 In session pooling mode, the reset query must clean old prepared
@@ -123,34 +110,6 @@ Use SHOW CLIENTS and SHOW SERVERS views on console.
 
 3.  Use `local_addr` and `local_port` to identify TCP connection to
     server.
-
-### Overview of important fields in SHOW CLIENTS
-
-addr, port
-: source address of client connection
-
-local_addr, local_port
-: local endpoint of client connection
-
-ptr
-: unique id for this connection
-
-link
-: unique id for server connection this client connection is currently linked to
-
-### Overview of important fields in SHOW SERVERS
-
-addr, port
-: server address pgbouncer connects to
-
-local_addr, local_port
-: connections local endpoint
-
-ptr
-: unique id for this connection
-
-link
-: unique id for client connection this server connection is currently linked to
 
 ## Should PgBouncer be installed on webserver or database server?
 
