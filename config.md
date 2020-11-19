@@ -17,15 +17,21 @@ and "#" are not recognized as special when they appear later in the line.
 
 ### logfile
 
-Specifies the log file. The log file is kept open, so after rotation `kill -HUP`
+Specifies the log file.  For daemonization (`-d`), either this or
+`syslog` need to be set.
+
+The log file is kept open, so after rotation `kill -HUP`
 or on console `RELOAD;` should be done.
 On Windows, the service must be stopped and started.
+
+Note that setting `logfile` does not by itself turn off logging to
+stderr.  Use the command-line option `-q` or `-d` for that.
 
 Default: not set
 
 ### pidfile
 
-Specifies the PID file. Without `pidfile` set, daemonization is not allowed.
+Specifies the PID file. Without `pidfile` set, daemonization (`-d`) is not allowed.
 
 Default: not set
 
@@ -145,6 +151,8 @@ Default: `SELECT usename, passwd FROM pg_shadow WHERE usename=$1`
 If `auth_user` is set, then any user not specified in `auth_file` will be
 queried through the `auth_query` query from pg_shadow in the database,
 using `auth_user`. The password of `auth_user` will be taken from `auth_file`.
+(If the `auth_user` does not require a password then it does not need
+to be defined in `auth_file`.)
 
 Direct access to pg_shadow requires admin rights.  It's preferable to
 use a non-superuser that calls a SECURITY DEFINER function instead.
@@ -608,6 +616,14 @@ Default: `secure`
 
 ### client_tls_ciphers
 
+Allowed TLS ciphers, in OpenSSL syntax.  Shortcuts:
+`default`/`secure`, `compat`/`legacy`, `insecure`/`all`, `normal`,
+`fast`.
+
+Only connections using TLS version 1.2 and lower are affected.  There
+is currently no setting that controls the cipher choices used by TLS
+version 1.3 connections.
+
 Default: `fast`
 
 ### client_tls_ecdhcurve
@@ -682,6 +698,14 @@ Shortcuts: `all` (tlsv1.0,tlsv1.1,tlsv1.2,tlsv1.3), `secure` (tlsv1.2,tlsv1.3), 
 Default: `secure`
 
 ### server_tls_ciphers
+
+Allowed TLS ciphers, in OpenSSL syntax.  Shortcuts:
+`default`/`secure`, `compat`/`legacy`, `insecure`/`all`, `normal`,
+`fast`.
+
+Only connections using TLS version 1.2 and lower are affected.  There
+is currently no setting that controls the cipher choices used by TLS
+version 1.3 connections.
 
 Default: `fast`
 
@@ -978,6 +1002,7 @@ file in the following format:
 There should be at least 2 fields, surrounded by double quotes. The first
 field is the user name and the second is either a plain-text, a MD5-hashed
 password, or a SCRAM secret.  PgBouncer ignores the rest of the line.
+Double quotes in a field value can be escaped by writing two double quotes.
 
 PostgreSQL MD5-hashed password format:
 
@@ -1035,12 +1060,12 @@ It follows the format of the PostgreSQL `pg_hba.conf` file
 Minimal config:
 
     [databases]
-    template1 = host=127.0.0.1 dbname=template1 auth_user=someuser
+    template1 = host=localhost dbname=template1 auth_user=someuser
 
     [pgbouncer]
     pool_mode = session
     listen_port = 6432
-    listen_addr = 127.0.0.1
+    listen_addr = localhost
     auth_type = md5
     auth_file = users.txt
     logfile = pgbouncer.log
@@ -1056,10 +1081,10 @@ Database defaults:
     foodb =
 
     ; redirect bardb to bazdb on localhost
-    bardb = host=127.0.0.1 dbname=bazdb
+    bardb = host=localhost dbname=bazdb
 
     ; access to destination database will go with single user
-    forcedb = host=127.0.0.1 port=300 user=baz password=foo client_encoding=UNICODE datestyle=ISO
+    forcedb = host=localhost port=300 user=baz password=foo client_encoding=UNICODE datestyle=ISO
 
 Example of a secure function for `auth_query`:
 

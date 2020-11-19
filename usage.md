@@ -65,11 +65,11 @@ Basic setup and usage is as follows.
 1. Create a pgbouncer.ini file.  Details in **pgbouncer(5)**.  Simple example:
 
         [databases]
-        template1 = host=127.0.0.1 port=5432 dbname=template1
+        template1 = host=localhost port=5432 dbname=template1
 
         [pgbouncer]
         listen_port = 6432
-        listen_addr = 127.0.0.1
+        listen_addr = localhost
         auth_type = md5
         auth_file = userlist.txt
         logfile = pgbouncer.log
@@ -113,6 +113,11 @@ Basic setup and usage is as follows.
 
 `-d`, `--daemon`
 :   Run in the background. Without it, the process will run in the foreground.
+
+    In daemon mode, setting `pidfile` as well as `logfile` or `syslog`
+    is required.  No log messages will be written to stderr after
+    going into the background.
+
     Note: Does not work on Windows; **pgbouncer** need to run as service there.
 
 `-R`, `--reboot`
@@ -130,8 +135,8 @@ Basic setup and usage is as follows.
 :   Increase verbosity.  Can be used multiple times.
 
 `-q`, `--quiet`
-:   Be quiet: do not log to stdout.  This does not affect
-    logging verbosity, only that stdout is not to be used.
+:   Be quiet: do not log to stderr.  This does not affect
+    logging verbosity, only that stderr is not to be used.
     For use in init.d scripts.
 
 `-V`, `--version`
@@ -312,7 +317,7 @@ addr
 :   IP address of client.
 
 port
-:   Port client is connected to.
+:   Source port of client.
 
 local_addr
 :   Connection end address on local machine.
@@ -536,6 +541,9 @@ key
 
 value
 :   Configuration value
+
+default
+:   Configuration default value
 
 changeable
 :   Either **yes** or **no**, shows if the variable can be changed while running.
