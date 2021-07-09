@@ -63,6 +63,7 @@ features.
 | PRESERVE/DELETE ROWS temp tables | Yes             | Never               |
 | Cached plan reset                | Yes             | Yes                 |
 | LOAD statement                   | Yes             | Never               |
+| Session-level advisory locks     | Yes             | Never               |
 |----------------------------------+-----------------+---------------------|
 
 [^0]:
