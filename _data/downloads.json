@@ -2,6 +2,16 @@
   "series": [
     [
       {
+        "basever": "1.17", 
+        "date": "2022-03-23", 
+        "tgz_basename": "pgbouncer-1.17.0.tar.gz", 
+        "tgz_file": "files/1.17.0/pgbouncer-1.17.0.tar.gz", 
+        "tgz_size": 598294, 
+        "version": "1.17.0"
+      }
+    ], 
+    [
+      {
         "basever": "1.16", 
         "date": "2021-11-11", 
         "tgz_basename": "pgbouncer-1.16.1.tar.gz", 

@@ -167,6 +167,10 @@ Additionally, the user name **pgbouncer** is allowed to log in without password,
 if the login comes via the Unix socket and the client has same Unix user UID
 as the running process.
 
+The admin console currently only supports the simple query protocol.
+Some drivers use the extended query protocol for all commands; these
+drivers will not work for this.
+
 ### Show commands
 
 The **SHOW** commands output information. Each command is described below.
@@ -667,8 +671,10 @@ The PgBouncer process will exit.
 
 #### RELOAD
 
-The PgBouncer process will reload its configuration file and update
-changeable settings.
+The PgBouncer process will reload its configuration files and update
+changeable settings.  This includes the main configuration file as
+well as the files specified by the settings `auth_file` and
+`auth_hba_file`.
 
 PgBouncer notices when a configuration file reload changes the
 connection parameters of a database definition.  An existing server
