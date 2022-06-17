@@ -12,7 +12,7 @@ title: PgBouncer features
         connection will be assigned to it for the whole duration it
         stays connected.  When the client disconnects, the server
         connection will be put back into pool.  This mode supports all
-        PostgeSQL features.
+        PostgreSQL features.
 
      Transaction pooling
      :  A server connection is assigned to a client only during a
