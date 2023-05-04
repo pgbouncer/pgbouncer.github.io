@@ -19,6 +19,8 @@ fullclean: clean
 
 # get some files from pgbouncer repo
 
+PYTHON = python3
+
 SRC = ../pgbouncer
 DOC = $(SRC)/doc
 
@@ -27,7 +29,7 @@ doc:
 	cat _build/frag-usage-web $(DOC)/usage.md > usage.md
 	cat _build/frag-changelog-web $(SRC)/NEWS.md > changelog.md
 	sed -e '1,/^---/d' $(SRC)/README.md | cat _build/frag-install-web - > install.md
-	python _build/downloads.py > _data/downloads.json
+	$(PYTHON) _build/downloads.py > _data/downloads.json
 	$(SHELL) ./_build/mk-sha.sh
 
 check-sha:
