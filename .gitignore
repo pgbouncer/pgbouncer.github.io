@@ -3,3 +3,4 @@ Gemfile.lock
 *.swp
 .gems
 .bundle
+!/downloads/**/*.tar.gz
