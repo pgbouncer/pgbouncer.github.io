@@ -3,6 +3,14 @@
     [
       {
         "basever": "1.19",
+        "date": "2023-05-31",
+        "tgz_basename": "pgbouncer-1.19.1.tar.gz",
+        "tgz_file": "files/1.19.1/pgbouncer-1.19.1.tar.gz",
+        "tgz_size": 623569,
+        "version": "1.19.1"
+      },
+      {
+        "basever": "1.19",
         "date": "2023-05-04",
         "tgz_basename": "pgbouncer-1.19.0.tar.gz",
         "tgz_file": "files/1.19.0/pgbouncer-1.19.0.tar.gz",
