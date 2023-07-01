@@ -17,7 +17,7 @@ title: PgBouncer features
      Transaction pooling
      :  A server connection is assigned to a client only during a
         transaction.  When PgBouncer notices that the transaction is
-        over, the server will be put back into the pool.
+        over, the server connection will be put back into the pool.
 
         This mode breaks a few session-based features of PostgreSQL.
         You can use it only when the application cooperates by not
