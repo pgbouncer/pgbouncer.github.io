@@ -121,7 +121,9 @@ Basic setup and usage is as follows.
     Note: Does not work on Windows; **pgbouncer** need to run as service there.
 
 `-R`, `--reboot`
-:   Do an online restart. That means connecting to the running process,
+:   **DEPRECATED: Instead of this option use a rolling restart with multiple
+    pgbouncer processes listening on the same port using so_reuseport instead**
+    Do an online restart. That means connecting to the running process,
     loading the open sockets from it, and then using them.  If there
     is no active process, boot normally.
     Note: Works only if OS supports Unix sockets and the `unix_socket_dir`
@@ -663,9 +665,12 @@ Show the PgBouncer state settings. Current states are active, paused and suspend
 
 #### PAUSE [db]
 
-PgBouncer tries to disconnect from all servers, first waiting for all queries
-to complete. The command will not return before all queries are finished.  To be used
-at the time of database restart.
+PgBouncer tries to disconnect from all servers. Disconnecting each server connection
+waits for that server connection to be released according to the server pool's pooling
+mode (in transaction pooling mode, the transaction must complete, in statement mode,
+the statement most complete, and in session pooling mode the client must disconnect).
+The command will not return before all server connections have been disconnected.
+To be used at the time of database restart.
 
 If database name is given, only that database will be paused.
 

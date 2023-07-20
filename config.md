@@ -205,6 +205,25 @@ achieving uniform load.
 
 Default: 0
 
+### track_extra_parameters
+
+By default, PgBouncer tracks `client_encoding`, `datestyle`, `timezone`, `standard_conforming_strings`
+and `application_name` parameters per client. To allow other parameters to be tracked, they can be
+specified here, so that PgBouncer knows that they should be maintained in the client variable cache
+and restored in the server whenever the client becomes active.
+
+If you need to specify multiple values, use a comma-separated list (e.g.
+`default_transaction_readonly, IntervalStyle`)
+
+Note: Most parameters cannot be tracked this way. The only parameters that can be tracked are ones that
+Postgres reports to the client. Postgres has
+[an official list of parameters that it reports to the client](https://www.postgresql.org/docs/15/protocol-flow.html#PROTOCOL-ASYNC).
+Postgres extensions can change this list though, they can add parameters themselves that they also report,
+and they can start reporting already existing paremeters that Postgres does not report.
+Notably Citus 12.0+ causes Postgres to also report `search_path`.
+
+Default: IntervalStyle
+
 ### ignore_startup_parameters
 
 By default, PgBouncer allows only parameters it can keep track of in startup
@@ -693,11 +712,11 @@ Default: `auto`
 
 ### server_tls_sslmode
 
-TLS mode to use for connections to PostgreSQL servers.
-TLS connections are disabled by default.
+TLS mode to use for connections to PostgreSQL servers.  The default mode is
+`prefer`.
 
 disable
-:   Plain TCP.  TLS is not even requested from the server.  Default.
+:   Plain TCP.  TLS is not even requested from the server.
 
 allow
 :   FIXME: if server rejects plain, try TLS?
@@ -705,7 +724,7 @@ allow
 prefer
 :   TLS connection is always requested first from PostgreSQL.
     If refused, the connection will be established over plain TCP.
-    Server certificate is not validated.
+    Server certificate is not validated.  Default
 
 require
 :   Connection must go over TLS.  If server rejects it,
