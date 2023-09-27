@@ -86,7 +86,8 @@ or later:
 
 ## How to upgrade PgBouncer without dropping connections?
 
-[ This cannot be done with TLS connections. ]
+**DEPRECATED: Instead of this option use a rolling restart with multiple
+pgbouncer processes listening on the same port using so_reuseport instead**
 
 This is as easy as launching a new PgBouncer process with the `-R`
 switch and the same configuration:
