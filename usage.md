@@ -312,6 +312,10 @@ application_name
 :   A string containing the `application_name` set on the linked client connection,
     or empty if this is not set, or if there is no linked connection.
 
+prepared_statements
+:  The amount of prepared statements that are prepared on the server. This
+   number is limited by the `max_prepared_statements` setting.
+
 #### SHOW CLIENTS
 
 type
@@ -371,6 +375,9 @@ tls
 application_name
 :   A string containing the `application_name` set by the client
     for this connection, or empty if this was not set.
+
+prepared_statements
+:  The amount of prepared statements that the client has prepared
 
 #### SHOW POOLS
 
@@ -668,7 +675,7 @@ Show the PgBouncer state settings. Current states are active, paused and suspend
 PgBouncer tries to disconnect from all servers. Disconnecting each server connection
 waits for that server connection to be released according to the server pool's pooling
 mode (in transaction pooling mode, the transaction must complete, in statement mode,
-the statement most complete, and in session pooling mode the client must disconnect).
+the statement must complete, and in session pooling mode the client must disconnect).
 The command will not return before all server connections have been disconnected.
 To be used at the time of database restart.
 
