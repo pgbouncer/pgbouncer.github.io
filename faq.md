@@ -62,14 +62,14 @@ or at least to `DEALLOCATE ALL;`
 
 ## How to use prepared statements with transaction pooling?
 
-Since version 1.22.0 PgBouncer can track prepared statements in transaction
+Since version 1.21.0 PgBouncer can track prepared statements in transaction
 pooling mode and make sure they get prepared on-the-fly on the linked server
 connection. To enable this feature, `max_prepared_statements` needs to be
 set to a non-zero value. See the [docs for
 `max_prepared_statements`][/config.html#max_prepared_statements]
 for more details.
 
-For PgBouncer versions before 1.22.0 the only work-around is to disable
+For PgBouncer versions before 1.21.0 the only work-around is to disable
 prepared statements in the client side.
 
 ### Disabling prepared statements in JDBC
