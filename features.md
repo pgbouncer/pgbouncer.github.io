@@ -54,7 +54,8 @@ features.
 |----------------------------------+-----------------+---------------------|
 | Startup parameters [^0]          | Yes             | Yes                 |
 | SET/RESET                        | Yes             | Never               |
-| LISTEN/NOTIFY                    | Yes             | Never               |
+| LISTEN                           | Yes             | Never               |
+| NOTIFY                           | Yes             | Yes                 |
 | WITHOUT HOLD CURSOR              | Yes             | Yes                 |
 | WITH HOLD CURSOR                 | Yes             | Never               |
 | Protocol-level prepared plans    | Yes             | Yes                 |
