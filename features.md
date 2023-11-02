@@ -57,7 +57,7 @@ features.
 | LISTEN/NOTIFY                    | Yes             | Never               |
 | WITHOUT HOLD CURSOR              | Yes             | Yes                 |
 | WITH HOLD CURSOR                 | Yes             | Never               |
-| Protocol-level prepared plans    | Yes             | No [^2]             |
+| Protocol-level prepared plans    | Yes             | Yes                 |
 | PREPARE / DEALLOCATE             | Yes             | Never               |
 | ON COMMIT DROP temp tables       | Yes             | Yes                 |
 | PRESERVE/DELETE ROWS temp tables | Yes             | Never               |
@@ -71,6 +71,3 @@ features.
     and `standard_conforming_strings`.  PgBouncer detects their
     changes and so it can guarantee they remain consistent for the
     client.
-
-[^2]:
-    It is possible to add support for that into PgBouncer.
