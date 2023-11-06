@@ -68,10 +68,13 @@ features.
 |----------------------------------+-----------------+---------------------|
 
 [^0]:
-    Startup parameters are: `client_encoding`, `datestyle`, `timezone`,
-    and `standard_conforming_strings`.  PgBouncer detects their
-    changes and so it can guarantee they remain consistent for the
-    client.
+    Startup parameters are: `client_encoding`, `DateStyle`, `IntervalStyle`,
+    `Timezone`, `standard_conforming_strings`, and `application_name`.
+    PgBouncer detects their changes and so it can guarantee they remain
+    consistent for the client. If you need PgBouncer to support more than
+    these, take a look at
+    [`track_extra_parameters`](/config.html#track_extra_parameters) and
+    [`ignore_startup_parameters`](/config.html#ignore_startup_parameters).
 
 [^1]:
     You need to change
