@@ -58,7 +58,7 @@ features.
 | NOTIFY                           | Yes             | Yes                 |
 | WITHOUT HOLD CURSOR              | Yes             | Yes                 |
 | WITH HOLD CURSOR                 | Yes             | Never               |
-| Protocol-level prepared plans    | Yes             | Yes                 |
+| Protocol-level prepared plans    | Yes             | Yes [^1]            |
 | PREPARE / DEALLOCATE             | Yes             | Never               |
 | ON COMMIT DROP temp tables       | Yes             | Yes                 |
 | PRESERVE/DELETE ROWS temp tables | Yes             | Never               |
@@ -72,3 +72,8 @@ features.
     and `standard_conforming_strings`.  PgBouncer detects their
     changes and so it can guarantee they remain consistent for the
     client.
+
+[^1]:
+    You need to change
+    [`max_prepared_statements`](/config.html#max_prepared_statements) to a
+    non-zero value to enable this support.
