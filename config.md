@@ -321,28 +321,32 @@ was originally prepared on another server connection.
 
 PgBouncer internally examines all the queries that are sent as a prepared
 statement by clients and gives each unique query string an internal name with
-the format `PGBOUNCER_{unique_id}`. Prepared statements are only prepared using
-this name on the corresponding PostgreSQL server. PgBouncer keeps track of the
-name that the client gave to each prepared statement. It rewrites each command
-that uses a prepared statement to use the matching internal name (e.g.
-`PGBOUNCER_123`) before forwarding that command to the server. More
-importantly, if the prepared statement that the client wants to use is not
-prepared on the server yet, it automatically prepares that statement before
-forwarding the command that the client sent.
+the format `PGBOUNCER_{unique_id}`. If the same query string is prepared
+multiple times (possibly by different clients), then these queries share the
+same internal name. PgBouncer only prepares the statement on the actual
+PostgreSQL server using the internal name (so not the name provided by the
+client). PgBouncer keeps track of the name that the client gave to each
+prepared statement. It then rewrites each command that uses a prepared
+statement to by replacing the client side name with the the internal name (e.g.
+replacing `my_prepared_stamenent` with `PGBOUNCER_123`) before forwarding that
+command to the server. More importantly, if the prepared statement that the
+client wants to execute is not yet prepared on the server (e.g. because a
+different server is now assigned to the client then when the client prepared
+the statement), then PgBouncer transparrently prepares the statement before
+executing it.
 
 Note: This tracking and rewriting of prepared statement commands does not work
-for SQL-level prepared statement commands such as `PREPARE`, `EXECUTE`,
-`DEALLOCATE`, `DEALLOCATE ALL` and `DISCARD ALL`. Running `DEALLOCATE ALL` and
-`DISCARD ALL` is especially problematic, since those commands appear to run
-successfully, but they mess up with the state of the server connection
-significantly without PgBouncer noticing. Which in turn will very likely break
-the execution of any further prepared statements on that server connection.
+for SQL-level prepared statement commands, so `PREPARE`, `EXECUTE` and
+`DEALLOCATE` are forwarded straight to Postgres. The exception to this rule are
+the `DEALLOCATE ALL` and `DISCARD ALL` commands, these do work as expected and
+will clear the prepared statements that PgBouncer tracked for the client that
+sends this command.
 
 The actual value of this setting controls the number of prepared statements
-kept active on a single server connection. When the setting is set to 0
-prepared statement support for transaction and statement pooling is disabled.
-To get the best performance you should try to make sure that this setting is
-larger than the amount of commonly used prepared statements in your
+kept active in an LRU cache on a single server connection. When the setting is
+set to 0 prepared statement support for transaction and statement pooling is
+disabled. To get the best performance you should try to make sure that this
+setting is larger than the amount of commonly used prepared statements in your
 application. Keep in mind that the higher this value, the larger the memory
 footprint of each PgBouncer connection will be on your PostgreSQL server,
 because it will keep more queries prepared on those connections. It also
@@ -1173,6 +1177,14 @@ If no password is specified here, the password from the `auth_file` or
 ### auth_user
 
 Override of the global `auth_user` setting, if specified.
+
+### auth_query
+
+Override of the global `auth_query` setting, if specified. The entire SQL statement needs to be enclosed in single quotes.
+
+### auth_dbname
+
+Override of the global `auth_dbname` setting, if specified.
 
 ### pool_size
 
