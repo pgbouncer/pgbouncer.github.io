@@ -13,7 +13,7 @@ https://help.github.com/articles/using-jekyll-with-pages/
 
 In short:
 
-1. Install Ruby 2.x
+1. Install Ruby
 2. gem install bundler
 3. bundle install
 
