@@ -1,16 +1,22 @@
-<div class="sidebar well">
-{{ site.description }}
+<div class="sidebar card">
+  <div class="card-body">
+    {{ site.description }}
+  </div>
 </div>
 
-<div class="sidebar well">
+<div class="sidebar card">
+  <div class="card-body">
     <h1>News</h1>
     <ul>
-        {% for post in site.posts limit:5 %}
-          <li><a href="{{ site.baseurl}}{{ post.url }}">{{ post.title }}</a></li>
-        {% endfor %}
+      {% for post in site.posts limit:5 %}
+        <li><a href="{{ site.baseurl}}{{ post.url }}">{{ post.title }}</a></li>
+      {% endfor %}
     </ul>
+  </div>
 </div>
 
-<div class="sidebar well">
-{% include links-list.html %}
+<div class="sidebar card">
+  <div class="card-body">
+    {% include links-list.html %}
+  </div>
 </div>

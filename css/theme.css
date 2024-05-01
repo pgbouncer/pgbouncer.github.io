@@ -1,6 +1,33 @@
 body {
-    padding-top: 60px;
+    padding-top: 76px;
     padding-bottom: 60px;
+}
+
+:root {
+    --bs-link-color-rgb: 51, 103, 145;
+    --bs-link-hover-color-rgb: 25, 49, 69;
+}
+
+/* remove underlines from obvious links */
+h1 a {
+    text-decoration: none;
+}
+
+.sidebar a {
+    text-decoration: none;
+}
+
+h1 a:hover {
+    text-decoration: underline;
+}
+
+.sidebar a:hover {
+    text-decoration: underline;
+}
+
+.sidebar li {
+    margin-top: .7em;
+    line-height: 1em;
 }
 
 .copyright {
@@ -12,16 +39,20 @@ body {
 }
 
 .footer a {
-    color: #ee4444;
+    /* color: #ee4444; */
+}
+
+.sidebar {
+    margin-bottom: 1em;
+}
+
+.article {
+    margin-bottom: 1em;
 }
 
 .sidebar h1 {
-    color: #ee4444;
+    /* color: #ee4444; */
     font-size: 1.3em;
-}
-
-.sidebar a {
-    color: #428bca;
 }
 
 .sidebar li {
@@ -29,45 +60,29 @@ body {
     line-height: 1em;
 }
 
-.sidebar a:hover {
-    color: #3071a9;
-}
-
 .container-left {
     margin: 0;
 }
 
-.well h1 {
-    color: #ee4444;
+.card h1 {
+    /* color: #ee4444; */
     font-size: 1.3em;
 }
 
-.well h2 {
+.card h2 {
     font-size: 1.2em;
 }
 
-.well h3 {
+.card h3 {
     font-size: 1.1em;
 }
 
 .author {
-    color: #ee4444;
+    /* color: #ee4444; */
 }
 
 .author a {
-    color: #ee4444;
-}
-
-/* Hack to get around the menubar having position: fixed; */
-h1[id]:before, h2[id]:before, h3[id]:before {
-    content: "";
-    display: block;
-    height: 60px;
-    margin: -60px 0 0;
-}
-
-.navbar {
-    transform: none;
+    /* color: #ee4444; */
 }
 
 dt {
@@ -90,3 +105,12 @@ table, td, th {
 th, td {
 	padding: 3px 7px 3px 7px;
 }
+
+/* Hack to get around the menubar having position: fixed; */
+h1[id]:before, h2[id]:before, h3[id]:before {
+    content: "";
+    display: block;
+    height: 60px;
+    margin: -60px 0 0;
+}
+
