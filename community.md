@@ -9,7 +9,7 @@ title: Community
 
   Install on RedHat-based system.
 
-- [How to Setup PgBouncer Connection Pooling with EDB Postgres Standard Server](http://www.enterprisedb.com/resources-community/tutorials-quickstarts/all-platforms/how-setup-pgbouncer-connection-pooling-postg)
+- [How to Set Up PgBouncer for Postgres Plus Standard Server](https://get.enterprisedb.com/docs/Tutorial_All_PPSS_pgBouncer.pdf)
 
   Good overview of PgBouncer concepts.
 
