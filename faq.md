@@ -96,29 +96,8 @@ or later:
 
 ## How to upgrade PgBouncer without dropping connections?
 
-**DEPRECATED: Instead of this option use a rolling restart with multiple
-pgbouncer processes listening on the same port using so_reuseport instead**
-
-This is as easy as launching a new PgBouncer process with the `-R`
-switch and the same configuration:
-
-    $ pgbouncer -R -d config.ini
-
-The `-R` (reboot) switch makes the new process connect to the console
-of the old process (dbname=pgbouncer) via the Unix socket and issue
-the following commands:
-
-    SUSPEND;
-    SHOW FDS;
-    SHUTDOWN;
-
-After that, if the new one notices that the old one is gone, it
-resumes work with the old connections. The magic happens during the
-`SHOW FDS` command which transports the actual file descriptors to new
-process.
-
-If the takeover does not work for whatever reason, the new process can
-be simply killed. The old one notices this and resumes work.
+You can use a rolling restart by following the procedure described in the
+[section of the docs for `SHUTDOWN WAIT_FOR_CLIENTS`](https://www.pgbouncer.org/usage.html#shutdown-wait_for_clients)
 
 ## How to know which client is on which server connection?
 
