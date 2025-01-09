@@ -71,9 +71,11 @@ for more details.
 
 If you use PHP/PDO, depending on its version it might be incompatible with
 PgBouncer its prepared statement support ([#991]). PHP/PDO is only compatible
-when PHP 8.4+ **and** libpq 17 are used. So for setups with older versions it's
+when [PHP 8.4+ **and** libpq 17][php-fix] are used. So for setups with older versions it's
 recommended to upgrade, or to to disable prepared statements on the client
 side.
+
+[php-fix]: https://github.com/php/php-src/commit/f35ad560b468e3e0a6c289949ba9b19af4fa3e7b
 
 [#991]: https://github.com/pgbouncer/pgbouncer/issues/991
 
