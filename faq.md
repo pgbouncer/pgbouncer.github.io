@@ -69,10 +69,11 @@ set to a non-zero value. See the [docs for
 `max_prepared_statements`](/config.html#max_prepared_statements)
 for more details.
 
-Due to the way PHP/PDO uses prepared statements ([#991]) the prepared statement
-support in PgBouncer 1.21.0 does not work for PHP/PDO. So for PHP/PDO and
-PgBouncer versions before 1.21.0 the only work-around is to disable prepared
-statements in the client side.
+If you use PHP/PDO, depending on its version it might be incompatible with
+PgBouncer its prepared statement support ([#991]). PHP/PDO is only compatible
+when PHP 8.4+ **and** libpq 17 are used. So for setups with older versions it's
+recommended to upgrade, or to to disable prepared statements on the client
+side.
 
 [#991]: https://github.com/pgbouncer/pgbouncer/issues/991
 
