@@ -213,6 +213,19 @@ total_wait_time
 :   Time spent by clients waiting for a server, in microseconds. Updated
     when a client connection is assigned a backend connection.
 
+total_client_parse_count
+:   Total number of prepared statements created by clients. Only applicable
+    in named prepared statement tracking mode, see `max_prepared_statements`.
+
+total_server_parse_count
+:   Total number of prepared statements created by **pgbouncer** on a server. Only
+    applicable in named prepared statement tracking mode, see `max_prepared_statements`.
+
+total_bind_count
+:   Total number of prepared statements readied for execution by clients and forwarded
+    to PostgreSQL by **pgbouncer**. Only applicable in named prepared statement tracking
+    mode, see `max_prepared_statements`.
+
 avg_xact_count
 :   Average transactions per second in last stat period.
 
@@ -239,6 +252,19 @@ avg_wait_time
 :   Time spent by clients waiting for a server, in microseconds (average
     of the wait times for clients assigned a backend during the current
     `stats_period`).
+
+avg_client_parse_count
+:   Average number of prepared statements created by clients. Only applicable
+    in named prepared statement tracking mode, see `max_prepared_statements`.
+
+avg_server_parse_count
+:   Average number of prepared statements created by **pgbouncer** on a server. Only
+    applicable in named prepared statement tracking mode, see `max_prepared_statements`.
+
+avg_bind_count
+:   Average number of prepared statements readied for execution by clients and forwarded
+    to PostgreSQL by **pgbouncer**. Only applicable in named prepared statement tracking
+    mode, see `max_prepared_statements`.
 
 #### SHOW STATS_TOTALS
 
@@ -303,7 +329,6 @@ close_needed
 
 ptr
 :   Address of internal object for this connection.
-    Used as unique ID.
 
 link
 :   Address of client connection the server is paired with.
@@ -325,6 +350,10 @@ application_name
 prepared_statements
 :  The amount of prepared statements that are prepared on the server. This
    number is limited by the `max_prepared_statements` setting.
+
+id
+:   Unique ID for server.
+
 
 #### SHOW CLIENTS
 
@@ -373,7 +402,6 @@ close_needed
 
 ptr
 :   Address of internal object for this connection.
-    Used as unique ID.
 
 link
 :   Address of server connection the client is paired with.
@@ -391,6 +419,9 @@ application_name
 
 prepared_statements
 :  The amount of prepared statements that the client has prepared
+
+id
+:   Unique ID for client.
 
 #### SHOW POOLS
 
@@ -451,6 +482,9 @@ maxwait_us
 
 pool_mode
 :   The pooling mode in use.
+
+load_balance_hosts
+:   The load_balance_hosts in use if the pool's host contains a comma-separated list.
 
 #### SHOW PEER_POOLS
 
@@ -524,6 +558,9 @@ name
 pool_size
 :   The user's override pool_size. or NULL if not set.
 
+reserve_pool_size
+:   The user's override reserve_pool_size. or NULL if not set.
+
 pool_mode
 :   The user's override pool_mode, or NULL if not set.
 
@@ -532,7 +569,14 @@ max_user_connections
     for this specific user, then the default value will be displayed.
 
 current_connections
-:   Current number of connections that this user has open to all servers.
+:   Current number of server connections that this user has open to all servers.
+
+max_user_client_connections
+:   The user's max_user_client_connections setting. If this setting is not set
+    for this specific user, then the default value will be displayed.
+
+current_client_connections
+:   Current number of client connections that this user has open to pgbouncer.
 
 #### SHOW DATABASES
 
@@ -559,7 +603,7 @@ pool_size
 min_pool_size
 :   Minimum number of server connections.
 
-reserve_pool
+reserve_pool_size
 :   Maximum number of additional connections for this database.
 
 server_lifetime
@@ -568,12 +612,21 @@ server_lifetime
 pool_mode
 :   The database's override pool_mode, or NULL if the default will be used instead.
 
+load_balance_hosts
+:   The database's load_balance_hosts if the host contains a comma-separated list.
+
 max_connections
-:   Maximum number of allowed connections for this database, as set by
+:   Maximum number of allowed server connections for this database, as set by
     **max_db_connections**, either globally or per database.
 
 current_connections
-:   Current number of connections for this database.
+:   Current number of server connections for this database.
+
+max_client_connections
+:   Maximum number of allowed client connections for this pgbouncer instance, as set by max_db_client_connections per database.
+
+current_client_connections
+:   Current number of client connections for this database.
 
 paused
 :   1 if this database is currently paused, else 0.
@@ -754,6 +807,14 @@ Immediately drop all client and server connections on given database.
 
 New client connections to a killed database will wait until **RESUME**
 is called.
+
+#### KILL_CLIENT id
+
+Immediately kill specificed client connection along with any server
+connections for the given client. The client to kill, is identified
+by the `id` value that can be found using the `SHOW CLIENTS` command.
+
+An example command will look something like `KILL_CLIENT 1234`.
 
 #### SUSPEND
 
