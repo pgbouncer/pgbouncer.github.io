@@ -148,7 +148,7 @@ Basic setup and usage is as follows.
 :   Show short help.
 
 `--regservice`
-:   Win32: Register pgbouncer to run as Windows service.  The **service_name**
+:   Win32: Register PgBouncer to run as Windows service.  The **service_name**
     configuration parameter value is used as the name to register under.
 
 `--unregservice`
@@ -294,7 +294,7 @@ replication
 :   If server connection uses replication. Can be **none**, **logical** or **physical**.
 
 state
-:   State of the pgbouncer server connection, one of **active**,
+:   State of the PgBouncer server connection, one of **active**,
     **idle**, **used**, **tested**, **new**, **active_cancel**,
     **being_canceled**.
 
@@ -370,7 +370,8 @@ replication
 :   If client connection uses replication. Can be **none**, **logical** or **physical**.
 
 state
-:   State of the client connection, one of **active**, **waiting**,
+:   State of the client connection, one of **active** (Client connections that are linked to server connections),
+    **idle** (Client connections with no queries waiting to be processed), **waiting**,
     **active_cancel_req**, or **waiting_cancel_req**.
 
 addr
@@ -576,7 +577,7 @@ max_user_client_connections
     for this specific user, then the default value will be displayed.
 
 current_client_connections
-:   Current number of client connections that this user has open to pgbouncer.
+:   Current number of client connections that this user has open to PgBouncer.
 
 #### SHOW DATABASES
 
@@ -584,17 +585,17 @@ name
 :   Name of configured database entry.
 
 host
-:   Host pgbouncer connects to.
+:   Host PgBouncer connects to.
 
 port
-:   Port pgbouncer connects to.
+:   Port PgBouncer connects to.
 
 database
-:   Actual database name pgbouncer connects to.
+:   Actual database name PgBouncer connects to.
 
 force_user
 :   When the user is part of the connection string, the connection between
-    pgbouncer and PostgreSQL is forced to the given user, whatever the
+    PgBouncer and PostgreSQL is forced to the given user, whatever the
     client user.
 
 pool_size
@@ -623,7 +624,7 @@ current_connections
 :   Current number of server connections for this database.
 
 max_client_connections
-:   Maximum number of allowed client connections for this pgbouncer instance, as set by max_db_client_connections per database.
+:   Maximum number of allowed client connections for this PgBouncer instance, as set by max_db_client_connections per database.
 
 current_client_connections
 :   Current number of client connections for this database.
@@ -640,10 +641,10 @@ peer_id
 :   ID of the configured peer entry.
 
 host
-:   Host pgbouncer connects to.
+:   Host PgBouncer connects to.
 
 port
-:   Port pgbouncer connects to.
+:   Port PgBouncer connects to.
 
 pool_size
 :   Maximum number of server connections that can be made to this peer
@@ -801,16 +802,17 @@ recommended instead.  To close server connections without waiting (for
 example, in emergency failover rather than gradual switchover
 scenarios), also consider **KILL**.
 
-#### KILL db
+#### KILL [db]
 
-Immediately drop all client and server connections on given database.
+Immediately drop all client and server connections on the given database or all
+databases, excluding the admin database.
 
 New client connections to a killed database will wait until **RESUME**
 is called.
 
 #### KILL_CLIENT id
 
-Immediately kill specificed client connection along with any server
+Immediately kill specified client connection along with any server
 connections for the given client. The client to kill, is identified
 by the `id` value that can be found using the `SHOW CLIENTS` command.
 
@@ -839,12 +841,15 @@ Stop accepting new connections and shutdown after all servers are released.
 This is basically the same as issuing **PAUSE** and **SHUTDOWN**, except that
 this also stops accepting new connections while waiting for the **PAUSE** as
 well as eagerly disconnecting clients that are waiting to receive a server
-connection.
+connection. Please note that UNIX sockets will remain open during the shutdown
+but will only accept connections to the PgBouncer admin console.
 
 #### SHUTDOWN WAIT_FOR_CLIENTS
 
 Stop accepting new connections and shutdown the process once all existing
-clients have disconnected. This command can be used to do zero-downtime rolling
+clients have disconnected. Please note that UNIX sockets will remain open
+during the shutdown but will only accept connections to the pgbouncer
+admin console. This command can be used to do zero-downtime rolling
 restart of two PgBouncer processes using the following procedure:
 
 1. Have two or more PgBouncer processes running on the same port using
