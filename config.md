@@ -1715,14 +1715,13 @@ Database examples:
 
 Example of a secure function for `auth_query`:
 
-    CREATE OR REPLACE FUNCTION pgbouncer.user_lookup(in i_username text, out uname text, out phash text)
-    RETURNS record AS $$
+    CREATE OR REPLACE FUNCTION pgbouncer.user_lookup(i_username text)
+    RETURNS TABLE (uname text, phash text) AS $$
     BEGIN
-        SELECT rolname, CASE WHEN rolvaliduntil < now() THEN NULL ELSE rolpassword END
+        RETURN QUERY
+        SELECT rolname::text, CASE WHEN rolvaliduntil < now() THEN NULL ELSE rolpassword END
         FROM pg_authid
-        WHERE rolname=i_username AND rolcanlogin
-        INTO uname, phash;
-        RETURN;
+        WHERE rolname=i_username AND rolcanlogin;
     END;
     $$ LANGUAGE plpgsql
        SECURITY DEFINER
