@@ -1,0 +1,28 @@
+header:
+  schema-version: 2.2.0
+  last-updated: "2026-10-08"
+  last-reviewed: "2026-10-08"
+  url: https://raw.githubusercontent.com/pgbouncer/pgbouncer.github.io/refs/heads/master/security-insights.yml
+  project-si-source: https://raw.githubusercontent.com/pgbouncer/pgbouncer/refs/heads/master/security-insights.yml
+repository:
+  status: active
+  url: https://github.com/pgbouncer/pgbouncer.github.io
+  accepts-change-request: true
+  accepts-automated-change-request: false
+  core-team:
+    - name: Jelte Fennema-Nio
+      primary: true
+      email: postgres@jeltef.nl
+    - name: Peter Eisentraut
+      primary: false
+      email: peter@eisentraut.org
+    - name: Euler Taveira
+      primary: false
+      email: euler@eulerto.com
+  license:
+    url: https://raw.githubusercontent.com/pgbouncer/pgbouncer.github.io/refs/heads/master/LICENSE
+    expression: ISC
+  security:
+    assessments:
+      self:
+        comment: Self assessment has not yet been completed.
